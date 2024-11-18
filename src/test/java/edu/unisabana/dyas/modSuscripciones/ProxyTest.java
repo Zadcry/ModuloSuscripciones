@@ -3,7 +3,7 @@ package edu.unisabana.dyas.modSuscripciones;
 import edu.unisabana.dyas.modSuscripciones.models.User;
 import edu.unisabana.dyas.modSuscripciones.proxy.ContentService;
 import edu.unisabana.dyas.modSuscripciones.proxy.SubscriptionProxy;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

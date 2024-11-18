@@ -4,11 +4,16 @@ import edu.unisabana.dyas.modSuscripciones.adapter.PayPalAdapter;
 import edu.unisabana.dyas.modSuscripciones.adapter.PaymentGateway;
 import edu.unisabana.dyas.modSuscripciones.models.Subscription;
 import edu.unisabana.dyas.modSuscripciones.models.User;
+import edu.unisabana.dyas.modSuscripciones.observer.DatabaseMonitor;
+import edu.unisabana.dyas.modSuscripciones.observer.DatabaseObserver;
+import edu.unisabana.dyas.modSuscripciones.observer.DatabaseObserverImpl;
 import edu.unisabana.dyas.modSuscripciones.observer.PaymentService;
 import edu.unisabana.dyas.modSuscripciones.observer.SubscriptionManager;
 import edu.unisabana.dyas.modSuscripciones.proxy.ContentService;
 import edu.unisabana.dyas.modSuscripciones.proxy.SubscriptionProxy;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class Main {
@@ -48,5 +53,26 @@ public class Main {
         // 10. Simular de nuevo la expiración de la suscripción
         System.out.println("\nEl usuario ha desactivado la autorrenovación.");
         subscriptionManager.checkSubscriptionStatus();
+
+         try (// Obtener la conexión a la base de datos
+        Connection connection = DatabaseConnection.getConnection()) {
+            // Crear el monitor y registrar un observer
+            DatabaseMonitor monitor = new DatabaseMonitor(connection);
+            DatabaseObserver observer = new DatabaseObserverImpl();
+            monitor.addObserver(observer);
+
+            // Iniciar la supervisión (cada 5 segundos)
+            monitor.startMonitoring(5000);
+            
+            // Mantener el programa en ejecución
+            Thread.sleep(60000); // Mantén el programa corriendo durante 1 minuto
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
     }
 }
